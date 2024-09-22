@@ -1,0 +1,38 @@
+# нужно запустить docker-compose up дважды из-за того, что БД заполняется тестовыми данными
+
+version: '3.9'
+
+services:
+  app:
+    image: 'menuapi-0.0.1'
+    ports:
+      - "8080:8080" # хост:контейнер
+    build:
+      context: .
+    container_name: menuapi
+    depends_on:
+      - postgres
+    environment:
+      MENU_PSQL_USERNAME_DKR:  ${MENU_PSQL_USERNAME}
+      MENU_PSQL_PASSWORD_DKR: ${MENU_PSQL_PASSWORD}
+      MENU_CERT_PASSWORD_DKR: ${MENU_CERT_PASSWORD}
+      MENU_DB_HOST_DKR: "postgres"
+      MENU_DB_PORT_DKR: "5432"
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: "menudb"
+      POSTGRES_USER: ${MENU_PSQL_USERNAME}
+      POSTGRES_PASSWORD: ${MENU_PSQL_PASSWORD}
+      POSTGRES_ROOT_PASSWORD: ${MENU_PSQL_PASSWORD}
+      PGDATA: "/var/lib/postgresql/data/pgdata"
+    volumes:
+      - ./docker-entrypoint-initdb.d/gen.sql:/docker-entrypoint-initdb.d/gen.sql
+      - menu-data:/var/lib/postgresql/data
+    ports:
+      - 5435:5432
+    expose:
+      - "5435" # смотрит наружу
+volumes:
+  menu-data:
