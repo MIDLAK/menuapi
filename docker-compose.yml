@@ -1,4 +1,4 @@
-# нужно запустить docker-compose up дважды из-за того, что БД заполняется тестовыми данными
+# нужно запустить docker-compose up дважды из - за того, что БД заполняется тестовыми данными
 
 version: '3.9'
 
@@ -6,9 +6,9 @@ services:
   app:
     image: 'menuapi-0.0.1'
     ports:
-      - "8080:8080" # хост:контейнер
+      - "8080:8080" # хост : контейнер
     build:
-      context: .
+      context: . # запуск Dockerfile
     container_name: menuapi
     depends_on:
       - postgres
@@ -34,5 +34,21 @@ services:
       - 5435:5432
     expose:
       - "5435" # смотрит наружу
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    ports:
+      - "5672:5672"   # взаимодействие
+      - "15672:15672" # панель управления
+    expose:
+      - "5672" # смотрит наружу
+
 volumes:
   menu-data:
