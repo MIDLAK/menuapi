@@ -5,9 +5,6 @@ import com.vadim.menuapi.entity.DishEntity
 
 object DishMapper {
 
-    fun DishEntity.toDto() =
-        DishDto (
-            id = this.dishId,
-            name = this.name
-        )
+    fun DishEntity.toDto(): DishDto =
+        DishDto (id = this.dishId, name = this.name)
 }

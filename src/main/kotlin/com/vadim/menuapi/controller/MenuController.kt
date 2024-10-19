@@ -13,6 +13,8 @@ class MenuController(
     private val dishService: DishService
 ) {
     @GetMapping
-    fun getAll(): Collection<DishDto> =
-        dishService.getAll()
+    fun getMenu(): Collection<DishDto> {
+        dishService.sendAllDishes()
+        return dishService.getAll()
+    }
 }

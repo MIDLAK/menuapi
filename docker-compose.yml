@@ -18,6 +18,8 @@ services:
       MENU_CERT_PASSWORD_DKR: ${MENU_CERT_PASSWORD}
       MENU_DB_HOST_DKR: "postgres"
       MENU_DB_PORT_DKR: "5432"
+      RABBITMQ_USER_DKR: ${RABBITMQ_USER}
+      RABBITMQ_PASS_DKR: ${RABBITMQ_PASS}
 
   postgres:
     image: postgres:latest
@@ -39,8 +41,8 @@ services:
     image: rabbitmq:management
     container_name: rabbitmq
     environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
     volumes:
       - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
