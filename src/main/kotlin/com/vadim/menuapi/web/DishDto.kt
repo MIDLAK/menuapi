@@ -1,4 +1,4 @@
-package com.vadim.menuapi.dto
+package com.vadim.menuapi.web
 
 import java.util.UUID
 

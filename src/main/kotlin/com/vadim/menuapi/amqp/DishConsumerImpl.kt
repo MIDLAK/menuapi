@@ -1,8 +1,6 @@
-package com.vadim.menuapi.service
+package com.vadim.menuapi.amqp
 
-import com.vadim.menuapi.amqp.DishConsumer
-import com.vadim.menuapi.dto.DishDto
-import netscape.javascript.JSObject
+import com.vadim.menuapi.domain.DishConsumer
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Service
 
@@ -15,6 +13,6 @@ class DishConsumerImpl: DishConsumer {
     /**
      * Печать всех поступающих из очереди блюд
      */
-    @RabbitListener(queues = ["menuqueue"])
+    //@RabbitListener(queues = ["menuqueue"])
     override fun listenAndPrint(dish: String) = println(dish)
 }

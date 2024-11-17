@@ -1,4 +1,4 @@
-package com.vadim.menuapi.amqp
+package com.vadim.menuapi.domain
 
 /**
  * Потребитель блюд

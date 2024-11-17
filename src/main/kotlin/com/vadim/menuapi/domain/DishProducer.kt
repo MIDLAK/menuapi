@@ -1,6 +1,6 @@
-package com.vadim.menuapi.amqp
+package com.vadim.menuapi.domain
 
-import com.vadim.menuapi.dto.DishDto
+import com.vadim.menuapi.web.DishDto
 
 /**
  * Отправитель блюд
