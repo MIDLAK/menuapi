@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 /**
- * Конфигурация RabbitMQ для динамического создания множества очередей без маршрутизации.
+ * Конфигурация RabbitMQ для динамического создания множества очередей
  */
 @Configuration
 class RabbitMQConfig {
@@ -28,18 +28,14 @@ class RabbitMQConfig {
     lateinit var queueNames: List<String>
 
     /**
-     * Создаем очереди без маршрутизации, только прямые очереди.
-     */
-    /**
-     * Создаем очередь с помощью RabbitAdmin для их явного создания в RabbitMQ.
+     * Создание очередей
      */
     @Bean
     fun rabbitAdmin(connectionFactory: ConnectionFactory): RabbitAdmin {
         val rabbitAdmin = RabbitAdmin(connectionFactory)
-        // Создаем очереди, если они не существуют
         queueNames.forEach {
             val queue = Queue("$queuePrefix$it", true, false, false)
-            rabbitAdmin.declareQueue(queue)  // Явное создание очереди в RabbitMQ
+            rabbitAdmin.declareQueue(queue)  /* явное создание очереди в RabbitMQ */
         }
         return rabbitAdmin
     }
