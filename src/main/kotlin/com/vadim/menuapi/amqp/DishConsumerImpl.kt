@@ -13,6 +13,6 @@ class DishConsumerImpl: DishConsumer {
     /**
      * Печать всех поступающих из очереди блюд
      */
-    //@RabbitListener(queues = ["menuqueue"])
+    @RabbitListener(queues = ["menu_dishes"])
     override fun listenAndPrint(dish: String) = println(dish)
 }

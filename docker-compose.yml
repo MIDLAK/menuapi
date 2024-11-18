@@ -11,7 +11,10 @@ services:
       context: . # запуск Dockerfile
     container_name: menuapi
     depends_on:
-      - postgres
+      rabbitmq:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
     environment:
       MENU_PSQL_USERNAME_DKR:  ${MENU_PSQL_USERNAME}
       MENU_PSQL_PASSWORD_DKR: ${MENU_PSQL_PASSWORD}
@@ -36,6 +39,12 @@ services:
       - 5435:5432
     expose:
       - "5435" # смотрит наружу
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "${MENU_PSQL_USERNAME}" ]  # Проверка доступности PostgreSQL
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
 
   rabbitmq:
     image: rabbitmq:management
@@ -51,6 +60,12 @@ services:
       - "15672:15672" # панель управления
     expose:
       - "5672" # смотрит наружу
+    healthcheck:
+      test: [ "CMD", "rabbitmqctl", "status" ]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 5s
 
 volumes:
   menu-data:

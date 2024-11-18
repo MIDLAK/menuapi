@@ -1,6 +1,6 @@
 package com.vadim.menuapi.cqrs.command
 
-class CommandBusImpl(private val handlers: List<Any>) : CommandBus {
+class CommandBusProvider(private val handlers: List<Any>) : CommandBus {
     override fun <C : Command<R>, R> handle(command: C): R {
         val handler = handlers.find { it.javaClass.simpleName == "${command::class.simpleName}Handler" }
             ?: throw IllegalArgumentException("Handler not found for ${command::class.simpleName}")

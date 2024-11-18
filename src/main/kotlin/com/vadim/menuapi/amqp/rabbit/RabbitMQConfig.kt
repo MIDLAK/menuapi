@@ -1,10 +1,8 @@
 package com.vadim.menuapi.amqp.rabbit
 
-import org.springframework.amqp.core.Binding
-import org.springframework.amqp.core.BindingBuilder
 import org.springframework.amqp.core.Queue
-import org.springframework.amqp.core.TopicExchange
 import org.springframework.amqp.rabbit.connection.ConnectionFactory
+import org.springframework.amqp.rabbit.core.RabbitAdmin
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter
 import org.springframework.beans.factory.annotation.Value
@@ -12,61 +10,42 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 /**
- * Конфигурация RabbitMQ
+ * Конфигурация RabbitMQ для динамического создания множества очередей без маршрутизации.
  */
 @Configuration
 class RabbitMQConfig {
 
     /**
-     * Название очереди поиска блюд
+     * Префикс для имени очередей
      */
-    @Value("\${rabbitmq.queue.menu.find}")
-    lateinit var menuFindQueue: String
+    @Value("\${rabbitmq.queue.prefix}")
+    lateinit var queuePrefix: String
 
     /**
-     * Название очереди создания блюд
+     * Список имен очередей
      */
-    @Value("\${rabbitmq.queue.menu.created}")
-    lateinit var menuCreatedQueue: String
+    @Value("\${rabbitmq.queue.names}")
+    lateinit var queueNames: List<String>
 
     /**
-     * Название очереди изменения блюд
+     * Создаем очереди без маршрутизации, только прямые очереди.
      */
-    @Value("\${rabbitmq.queue.menu.updated}")
-    lateinit var menuUpdatedQueue: String
-
     /**
-     * Название очереди удаления блюд
-     */
-    @Value("\${rabbitmq.queue.menu.deleted}")
-    lateinit var menuDeletedQueue: String
-
-    /**
-     * Очередь для ответов
+     * Создаем очередь с помощью RabbitAdmin для их явного создания в RabbitMQ.
      */
     @Bean
-    fun menuFindQueue(): Queue = Queue(menuFindQueue, true)
+    fun rabbitAdmin(connectionFactory: ConnectionFactory): RabbitAdmin {
+        val rabbitAdmin = RabbitAdmin(connectionFactory)
+        // Создаем очереди, если они не существуют
+        queueNames.forEach {
+            val queue = Queue("$queuePrefix$it", true, false, false)
+            rabbitAdmin.declareQueue(queue)  // Явное создание очереди в RabbitMQ
+        }
+        return rabbitAdmin
+    }
 
     /**
-     * Очередь создания блюд
-     */
-    @Bean
-    fun createQueue(): Queue = Queue(menuCreatedQueue, true)
-
-    /**
-     * Очередь изменения блю
-     */
-    @Bean
-    fun updateQueue(): Queue = Queue(menuUpdatedQueue, true)
-
-    /**
-     * Очередь удаления блюд
-     */
-    @Bean
-    fun deleteQueue(): Queue = Queue(menuUpdatedQueue, true)
-
-    /**
-     * Шаблон взаимодействия с RabbitMQ
+     * RabbitTemplate для отправки сообщений.
      */
     @Bean
     fun rabbitTemplate(connectionFactory: ConnectionFactory): RabbitTemplate {
