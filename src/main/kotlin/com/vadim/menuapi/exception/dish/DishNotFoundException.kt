@@ -8,6 +8,6 @@ class DishNotFoundException(dishId: Int): ApiException(
     httpStatus = HttpStatus.NOT_FOUND,
     apiError = ApiError(
         code = "dish_not_found",
-        description = "dish width id=$dishId not found"
+        description = "Блюдо id=$dishId не найдено"
     )
 )

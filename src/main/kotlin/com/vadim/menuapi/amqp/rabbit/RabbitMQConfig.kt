@@ -25,7 +25,7 @@ class RabbitMQConfig {
      * Список имен очередей
      */
     @Value("\${rabbitmq.queue.names}")
-    lateinit var queueNames: List<String>
+    lateinit var queueNames: Collection<String>
 
     /**
      * Создание очередей
