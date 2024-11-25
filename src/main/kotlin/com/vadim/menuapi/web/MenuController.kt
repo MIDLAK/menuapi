@@ -1,9 +1,10 @@
 package com.vadim.menuapi.web
 
 import com.vadim.menuapi.cqrs.query.QueryBus
-import com.vadim.menuapi.domain.Dish
-import com.vadim.menuapi.domain.FindAllDishesQuery
-import com.vadim.menuapi.web.DishMapper.toDto
+import com.vadim.menuapi.domain.dish.Dish
+import com.vadim.menuapi.domain.dish.find.FindAllDishesQuery
+import com.vadim.menuapi.common.dish.DishMapper.toDto
+import com.vadim.menuapi.common.dish.DishDto
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
