@@ -4,7 +4,9 @@ import com.vadim.menuapi.data.ingredient.IngredientJpaRepository
 import com.vadim.menuapi.domain.dish.Dish
 import com.vadim.menuapi.domain.dish.create.NewDishParams
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.stereotype.Component
 
+@Component
 class DishFactory(
     private val dishJpaRepository: DishJpaRepository,
     private val ingredientJpaRepository: IngredientJpaRepository

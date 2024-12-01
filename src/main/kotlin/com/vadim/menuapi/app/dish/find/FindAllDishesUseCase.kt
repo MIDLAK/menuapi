@@ -2,7 +2,6 @@ package com.vadim.menuapi.app.dish.find
 
 import com.vadim.menuapi.domain.dish.Dish
 import com.vadim.menuapi.domain.dish.DishRepository
-import com.vadim.menuapi.domain.dish.notify.DishNotifier
 import org.springframework.stereotype.Component
 
 /**
@@ -10,8 +9,7 @@ import org.springframework.stereotype.Component
  */
 @Component
 class FindAllDishesUseCase(
-    private val dishRepository: DishRepository,
-    private val dishNotifier: DishNotifier
+    private val dishRepository: DishRepository
 ) {
 
     /**
@@ -20,8 +18,4 @@ class FindAllDishesUseCase(
     fun execute(): Collection<Dish> =
         dishRepository.findAllDishes()
             .filter { it.isActive }
-            .also {
-                /* отправка в специальную очередь для демонстрации работы */
-                dishNotifier.notifyAboutDishes(queueName = "menu_dishes", dishes = it)
-            }
 }

@@ -1,51 +1,47 @@
-package com.vadim.menuapi.amqp
+package com.vadim.menuapi.amqp.dish
 
+import com.vadim.menuapi.common.dish.DishDto
+import com.vadim.menuapi.common.dish.DishMapper.toDto
 import com.vadim.menuapi.common.dish.create.CreateDishDto
 import com.vadim.menuapi.common.dish.find.FindDishesDto
 import com.vadim.menuapi.common.dish.update.UpdateDishDto
 import com.vadim.menuapi.cqrs.command.CommandBus
 import com.vadim.menuapi.cqrs.query.QueryBus
-import com.vadim.menuapi.domain.dish.Dish
 import com.vadim.menuapi.domain.dish.create.CreateDishCommand
 import com.vadim.menuapi.domain.dish.create.NewDishParams
 import com.vadim.menuapi.domain.dish.delete.DeleteDishCommand
-import com.vadim.menuapi.domain.dish.find.FindDishesByFilerQuery
 import com.vadim.menuapi.domain.dish.find.FindAllDishesQuery
+import com.vadim.menuapi.domain.dish.find.FindDishesByFilerQuery
 import com.vadim.menuapi.domain.dish.find.FindDishesFilter
 import com.vadim.menuapi.domain.dish.update.DishUpdate
 import com.vadim.menuapi.domain.dish.update.UpdateDishCommand
+import org.springframework.amqp.rabbit.annotation.RabbitHandler
 import org.springframework.amqp.rabbit.annotation.RabbitListener
-import org.springframework.stereotype.Service
+import org.springframework.stereotype.Controller
 import java.util.*
 
 
-@Service
+@Controller
+@RabbitListener(queues = ["dish_request"])
 class DishController(
     private val queryBus: QueryBus,
     private val commandBus: CommandBus
 ) {
-
-    /**
-     * Печать всех поступающих из очереди блюд для демонстрации работы
-     */
-    @RabbitListener(queues = ["menu_dishes"])
-    fun listenAndPrint(dish: String) = println(dish)
-
-    @RabbitListener(queues = ["menu_find"])
-    fun listenFind(findDishesDto: FindDishesDto): Collection<Dish> =
+    @RabbitHandler
+    fun listenFind(findDishesDto: FindDishesDto): Collection<DishDto> =
         queryBus.handle(
             if (findDishesDto.findAll != null)
                 FindAllDishesQuery()
             else
                 FindDishesByFilerQuery(
                     findDishesFilter = FindDishesFilter(
-                        dishIds = findDishesDto.dishIds
+                        dishIds = findDishesDto.dishIds ?: listOf()
                     )
                 )
-        )
+        ).toDto()
 
-    @RabbitListener(queues = ["menu_create"])
-    fun listenCreate(newDish: CreateDishDto): Dish =
+    @RabbitHandler
+    fun listenCreate(newDish: CreateDishDto): DishDto =
         commandBus.handle(
             CreateDishCommand(
                 newDishParams = NewDishParams(
@@ -54,10 +50,10 @@ class DishController(
                     ingredientIds = newDish.ingredientIds
                 )
             )
-        )
+        ).toDto()
 
-    @RabbitListener(queues = ["menu_update"])
-    fun listenUpdate(dishUpdate: UpdateDishDto): Dish =
+    @RabbitHandler
+    fun listenUpdate(dishUpdate: UpdateDishDto): DishDto =
         commandBus.handle(
             UpdateDishCommand(
                 dishUpdate = DishUpdate(
@@ -67,9 +63,9 @@ class DishController(
                     price = dishUpdate.price
                 )
             )
-        )
+        ).toDto()
 
-    @RabbitListener(queues = ["menu_delete"])
+    @RabbitHandler
     fun listenDelete(dishId: UUID) =
         commandBus.handle(
             DeleteDishCommand(

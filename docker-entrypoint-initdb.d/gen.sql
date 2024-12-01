@@ -3,7 +3,7 @@ CREATE TABLE dish (
 	dish_id  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
 	name	 VARCHAR(64) NOT NULL,
 	price    numeric(8,2) NOT NULL,
-	isActive BOOLEAN NOT NULL DEFAULT TRUE
+	is_active BOOLEAN NOT NULL DEFAULT TRUE
 );
 
 CREATE TABLE ingredient_type (

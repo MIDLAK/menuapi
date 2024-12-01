@@ -1,12 +1,12 @@
 package com.vadim.menuapi.data.ingredient
 
 import com.vadim.menuapi.data.ingredient.type.IngredientTypeFactory
-import com.vadim.menuapi.domain.dish.DishRepository
 import com.vadim.menuapi.domain.ingredient.Ingredient
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.stereotype.Component
 
+@Component
 class IngredientFactory(
-    private val dishRepository: DishRepository,
     private val ingredientJpaRepository: IngredientJpaRepository,
     private val ingredientTypeFactory: IngredientTypeFactory
 ) {

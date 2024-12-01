@@ -26,5 +26,6 @@ class DishEntity (
     )
     override val ingredients: MutableCollection<IngredientEntity> = mutableListOf(),
 
+    @Column(name = "is_active")
     override var isActive: Boolean = true
 ): Dish
